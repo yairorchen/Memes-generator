@@ -11,35 +11,52 @@
 
 <body onload="onInit()">
     <header>
-        <div>
-            <h1>Meme Generator</h1>
-        </div>
-        <nav>
-            <ul class="navbar">
-                <li class="nav-link" onclick="showSection('gallery-layout')">gallery</li>
-                <li class="nav-link" onclick="showSection('saved-memes')">memes</li>
-                <li class="nav-link">about</li>
-            </ul>
-        </nav>
-        <div class="menu-icon" onclick="toggleMenu()">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="img/LOGO.png" alt="">
+            </div>
+            <nav>
+                <ul class="navbar">
+                    <a class="nav-link" onclick="showSection('gallery-layout')">gallery</a>
+                    <a class="nav-link" onclick="showSavedMemes()">memes</a>
+                    <a class="nav-link">about</a>
+                </ul>
+            </nav>
+            <div class="menu-icon" onclick="toggleMenu()">
+                <div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+            </div>
         </div>
     </header>
     <main>
 
         <!-- GALLERY SECTION -->
         <section class="gallery-layout">
-            <div gallery-filter>
-                <input type="text" oninput="onSearch()">
-                <ul class="categories">
-                    <li>baby</li>
-                    <li>cat</li>
-                    <li>dog</li>
-                    <li>vip</li>
-                    <li>weird</li>
-                </ul>
+            <div class="gallery-filter">
+                <input class="searching" type="text" oninput="onSearch()">
+                <div class="categories-container">
+                    <!-- <ul class="categories">
+                        <a>baby</a>
+                        <a>cat</a>
+                        <a>dog</a>
+                        <a>vip</a>
+                        <a>weird</a>
+                    </ul> -->
+                    <input onchange="onSortGalleryBy(this.value)" list="categories">
+
+                    <datalist id="categories">
+                        <option value="Baby">
+                        <option value="Cat">
+                        <option value="Dog">
+                        <option value="VIP">
+                        <option value="Weird">
+                    </datalist>
+                    <button class="btn more">More</button>
+                </div>
+                <!-- <button class="btn" onclick="onRandomeMeme()">i'm flexible</button> -->
             </div>
             <section class="gallery-items">
                 <!-- THE IMGS RENDER HERE -->
@@ -51,31 +68,41 @@
         <section class="meme-editor">
 
             <div class="canvas-container">
-                <canvas width="400" height="400" style="outline: 1px solid  "></canvas>
+                <canvas width="400" height="400" style="border-radius: 15px " "></canvas>
             </div>
-            <div class="meme-editor-control">
-                <h2>meme editor</h2>
+            <div class=" meme-editor-control">
 
-                <h3>inner color
-                    <input type="color" oninput="onSetInnerColor(this.value)"></input>
-                </h3>
+                    <input class="text-input" type="text" oninput="onSetLineTxt(this.value)">
+                    <div>
+                        <button class=" btn imp" onclick="onDrawText()">+text</button>
+                        <button class="btn imp" onclick="onSwitchLine()">⮀</button>
+                        <button class="btn imp" onclick="onSaveMeme()">save</button>
+                    </div>
+                    <div>
+                        <button class="sizing btn imp" onclick="onSizeCurrFont(5)">+A</button>
+                        <button class="sizing btn imp" onclick="onSizeCurrFont(-5)">-A</button>
+                        <p>F
+                            <input type="color" oninput="onSetInnerColor(this.value)"></input>
+                        </p>
+                        <p>S
+                            <input type="color" onchange="onSetBorderColor(this.value)"></input>
+                        </p>
+                    </div>
+                    <div class="emojis">
+                        <span onclick="onEmoji('🥰')">🥰</span>
+                        <span onclick="onEmoji('😤')">😤</span>
+                        <span onclick="onEmoji('😭')">😭</span>
+                        <span onclick="onEmoji('😍')">😍</span>
+                        <span onclick="onEmoji('🤯')">🤯</span>
+                        <span onclick="onEmoji('😴')">😴</span>
+                        <span onclick="onEmoji('😲')">😲</span>
+                        <span onclick="onEmoji('🤣')">🤣</span>
+                        <span onclick="onEmoji('💪')">💪</span>
 
-                <h3>border color
-                    <input type="color" onchange="onSetBorderColor(this.value)"></input>
-                </h3>
-
-                <div>
-                    <button class="sizing" onclick="onSizeCurrFont(5)">+</button>
-                    <button class="sizing" onclick="onSizeCurrFont(-5)">-</button>
-                </div>
-                <button onclick="onSwitchLine()">⮀</button>
-                <input type="text" oninput="onSetLineTxt(this.value)">
-                <button onclick="onDrawText()">Text</button>
-                <button class="btn"><a href="#" onclick="downloadCanvas(this)" download="file-name">Download
-                        img</a></button>
-                <button onclick="clearCanvas()"> clear</button>
-
-                <!-- <button class="btn" onclick="drawImg2()">get img background</button>
+                    </div>
+                    <button class="btn"><a href="#" onclick="downloadCanvas(this)"
+                            download="file-name">Download</a></button>
+                    <!-- <button class="btn" onclick="drawImg2()">get img background</button>
                  <button class="btn" onclick="uploadImg()">
                     Upload Image from Canvas
                 </button>
@@ -85,12 +112,13 @@
         </section>
 
 
-        <section class="saved-memes">
+        <section class="saved-memes gallery-items">
             saved memes
         </section>
     </main>
 
     <script src="js/services/storage-service.js"></script>
+    <script src="js/services/util-service.js"></script>
     <script src="js/services/meme-service.js"></script>
     <script src="js/services/gallery-service.js"></script>
     <script src="js/gallery-controller.js"></script>
