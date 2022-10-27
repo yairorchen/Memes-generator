@@ -23,7 +23,7 @@ var gImg = [
 ]
 
 function sortGalleryBy(val) {
-  if (val === '') gSortImgBy = []
+  gSortImgBy = []
   console.log(val)
   sortByCategory(val)
 }
@@ -35,6 +35,7 @@ function sortByCategory(val) {
       if (cat === val) gSortImgBy.push(img)
     })
   })
+  renderGallery([])
   renderGallery(gSortImgBy)
 }
 
@@ -42,6 +43,13 @@ function getImgs() {
   return gImg
 }
 
+// function getImgById(id) {
+//   var imgIdx = id - 1
+//   gImg[imgIdx].url
+//   var img = `<img id="${id}" src="${gImg[imgIdx].url}" alt="">`
+//   gCurrMemeImg = img
+//   return img
+// }
 function getImgById(id) {
   var imgIdx = id - 1
   gImg[imgIdx].url
@@ -54,7 +62,6 @@ function getMemeById(id) {
   console.log(gMeme)
   showSection('meme-editor')
   drawImg2(gMeme)
-
   return
 }
 

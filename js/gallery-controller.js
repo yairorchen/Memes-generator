@@ -35,10 +35,5 @@ function renderSavedMeme() {
                 </div>
                 `
   })
-  // (img) => `
-  //             <div class="img-container"><img id="${img.img.id}" onclick="onImgSelected(this)" class="gallery-item img"
-  //                     src="${img.img.url}" alt="">
-  //             </div>
-  //             `
   document.querySelector('.saved-memes').innerHTML = strHtmls
 }

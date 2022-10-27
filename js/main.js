@@ -4,6 +4,8 @@ let gElCanvas
 let gCtx
 let gCurrInnerColor = 'blue'
 let gCurrBorderColor = 'white'
+var gPos
+let gStartPos
 
 const TOUCH_EVS = ['touchstart', 'touchmove', 'touchend']
 
@@ -11,7 +13,7 @@ function onInit() {
   gElCanvas = document.querySelector('canvas')
   gCtx = gElCanvas.getContext('2d')
   addMouseListeners()
-  //   addTouchListeners()
+  addTouchListeners()
   hideSectionsInit()
   renderGallery()
   // window.addEventListener('resize', resizeCanvas)
@@ -68,51 +70,68 @@ function addTouchListeners() {
 }
 
 function onDown(ev) {
-  console.log('Im from onDown')
-  //Get the ev pos from mouse or touch
   const pos = getEvPos(ev)
-  // if (!isCircleClicked(pos)) return
-  // setCircleDrag(true)
-  //Save the pos we start from
-  // gStartPos = pos
+
+  if (!isTextClicked(pos)) return
+  setTextDrag(true)
+  gStartPos = pos
   document.body.style.cursor = 'grabbing'
 }
 
 function onMove(ev) {
-  console.log('Im from onMove')
-
+  const isDrag = gMeme.isDraged
+  if (!isDrag) return
   const pos = getEvPos(ev)
-
-  // const dx = pos.x - gStartPos.x
-  // const dy = pos.y - gStartPos.y
-
-  //Save the last pos , we remember where we`ve been and move accordingly
-  // gStartPos = pos
+  const dx = pos.x - gMeme.lines[gCurrLine].x
+  const dy = pos.y - gMeme.lines[gCurrLine].y
+  moveText(dx, dy)
 }
 
 function onUp() {
-  console.log('Im from onUp')
-  // setCircleDrag(false)
   document.body.style.cursor = 'grab'
+  setTextDrag(false)
 }
 
 function getEvPos(ev) {
-  //Gets the offset pos , the default pos
   let pos = {
     x: ev.offsetX,
     y: ev.offsetY,
   }
-  // Check if its a touch ev
   if (TOUCH_EVS.includes(ev.type)) {
-    //soo we will not trigger the mouse ev
     ev.preventDefault()
-    //Gets the first touch point
     ev = ev.changedTouches[0]
-    //Calc the right pos according to the touch screen
     pos = {
       x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
       y: ev.pageY - ev.target.offsetTop - ev.target.clientTop,
     }
   }
+
   return pos
+}
+
+function setTextDrag(isDrag) {
+  gMeme.isDraged = isDrag
+}
+
+function moveText(dx, dy) {
+  console.log(dx, dy)
+  gMeme.lines[gCurrLine].x += dx
+  gMeme.lines[gCurrLine].y += dy
+  var img = getMemeImg()
+  renderMeme(img)
+}
+
+function isTextClicked(clickedPos) {
+  const posX = gMeme.lines[gCurrLine].x
+  const posY = gMeme.lines[gCurrLine].y
+  // Calc the distance between two dots
+  const distance = Math.sqrt(
+    (posX - clickedPos.x) ** 2 + (posY - clickedPos.y) ** 2
+  )
+  //If its smaller then the radius of the circle we are inside
+  return distance <= gMeme.lines[0].size
+}
+
+function toggleMenu() {
+  document.body.classList.toggle('menu-open')
 }

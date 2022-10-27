@@ -19,6 +19,9 @@ function createMeme(
     selectedLineIdx: 0,
     img: getImgs()[id - 1],
     imgDataUrl: null,
+    src: getImgs().src,
+    id,
+    isDraged: false,
     lines: [
       {
         txt,
@@ -26,6 +29,8 @@ function createMeme(
         align: 'left',
         color,
         strokeColor,
+        x: 50,
+        y: 150,
       },
     ],
   }
@@ -34,9 +39,16 @@ function getSavedMemes() {
   return gSavedMemes
 }
 
+function moveText(val) {
+  gMeme.lines[gCurrLine].y += val * 10
+  var img = getMemeImg()
+  renderMeme(img)
+}
+
 function switchLine() {
   gCurrLine++
   if (gCurrLine >= gMeme.lines.length) gCurrLine = 0
+  document.querySelector('.text-input').value = gMeme.lines[gCurrLine].txt
 }
 
 function resizeCanvas() {
@@ -90,8 +102,8 @@ function setLineTxt(txt) {
 function setInnerColor(color) {
   gMeme.lines[gCurrLine].color = color
   var img = getMemeImg()
-  renderText(imgi)
-  // renderMeme(img)
+  // renderText(imgi)
+  renderMeme(img)
 }
 function setBorderColor(color) {
   gMeme.lines[gCurrLine].strokeColor = color
@@ -101,7 +113,7 @@ function setBorderColor(color) {
 }
 
 function drawText(
-  text = 'lorem',
+  text = 'TEXT',
   color,
   strokeColor = 'white',
   size,
@@ -116,14 +128,8 @@ function drawText(
   gCtx.strokeText(text, x, y)
 }
 
-function drawNewTxt(
-  text = 'lorem',
-  color = 'red',
-  size = 40,
-  x = 100,
-  y = 200
-) {
-  gMeme.lines.push({ txt: text, size, align: 'left', color })
+function drawNewTxt(text = 'TEXT', color = 'red', size = 40, x = 100, y = 250) {
+  gMeme.lines.push({ txt: text, size, align: 'left', color, x, y })
   gCtx.lineWidth = 1
   gCtx.strokeStyle = 'white'
   gCtx.fillStyle = color
@@ -131,11 +137,8 @@ function drawNewTxt(
   gCtx.fillText(text, x, y)
   gCtx.strokeText(text, x, y)
   var img = getMemeImg()
-  // renderMeme(img)
-  renderText(img)
-  console.log(gMeme)
-
-  console.log(gMeme.lines)
+  renderMeme(img)
+  switchLine()
 }
 
 function getSavedMemes() {
@@ -144,7 +147,8 @@ function getSavedMemes() {
 
 function saveCurrMeme() {
   gMeme.imgDataUrl = getImgDataUrl()
-  gSavedMemes.push(gMeme)
+  console.log()
+  if (gSavedMemes) gSavedMemes.unshift(gMeme)
   saveMemeToStorage()
 }
 
@@ -155,18 +159,6 @@ function saveMemeToStorage() {
 function loadMemeToStorage() {
   loadFromStorage(STORAGE_KEY)
 }
-
-// function saveMemeToStorage() {
-//   if (loadFromStorage(STORAGE_KEY)) {
-//     console.log('exist')
-//     var existingDB = loadFromStorage(STORAGE_KEY)
-//     existingDB.push(gMeme)
-//     saveToStorage(STORAGE_KEY, existingDB)
-//   } else {
-//     console.log('save to storage')
-//     saveToStorage(STORAGE_KEY, [gMeme])
-//   }
-// }
 
 function loadImageFromInput(ev, onImageReady) {
   const reader = new FileReader()
@@ -221,20 +213,10 @@ function onImgInput(ev) {
   loadImageFromInput(ev, renderImg)
 }
 
-function clearCanvas() {
-  // gCtx.fillStyle = 'rgba(255, 255, 255, 0.3)'
-  gCtx.clearRect(0, 0, gElCanvas.width, gElCanvas.height)
-}
-
-function addMouseListeners() {
-  console.log('listening')
-  gElCanvas.addEventListener('mousemove', onMove)
-  gElCanvas.addEventListener('mousedown', onDown)
-  gElCanvas.addEventListener('mouseup', onUp)
-}
-
-function addTouchListeners() {
-  gElCanvas.addEventListener('touchmove', onMove)
-  gElCanvas.addEventListener('touchstart', onDown)
-  gElCanvas.addEventListener('touchend', onUp)
+function removeTxt() {
+  gMeme.lines.splice(gCurrLine, 1)
+  console.log(gMeme.lines)
+  var img = getMemeImg()
+  switchLine()
+  renderMeme(img)
 }
