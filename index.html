@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memes generator</title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.png">
     <link rel="stylesheet" href="css/style.css" />
 </head>
 
@@ -41,11 +42,12 @@
                 <input class="searching" onchange="onSortGalleryBy(this.value)" list="categories">
                 <div class="categories-container">
                     <ul class="categories">
-                        <a onclick="onSortGalleryBy('Baby')">Baby</a>
-                        <a onclick="onSortGalleryBy('Cat')">Cat</a>
-                        <a onclick="onSortGalleryBy('Dog')">Dog</a>
-                        <a onclick="onSortGalleryBy('VIP')">VIP</a>
-                        <a onclick="onSortGalleryBy('Weird')">Weird</a>
+                        <a id="Baby" onclick="onSortGalleryBy('Baby')">Baby</a>
+                        <a id="Cat" onclick="onSortGalleryBy('Cat')">Cat</a>
+                        <a id="Dog" onclick="onSortGalleryBy('Dog')">Dog</a>
+                        <a id="VIP" onclick="onSortGalleryBy('VIP')">VIP</a>
+                        <a id="Weird" onclick="onSortGalleryBy('Weird')">Weird</a>
+                        <a id="Movies" onclick="onSortGalleryBy('Movies')">Movies</a>
                     </ul>
                     <datalist id="categories">
                         <option value="Baby">
@@ -53,8 +55,9 @@
                         <option value="Dog">
                         <option value="VIP">
                         <option value="Weird">
+                        <option value="Movies">
                     </datalist>
-                    <button class="btn more">More</button>
+                    <button onclick="onMore()" class="btn more">More</button>
                 </div>
                 <!-- <button class="btn" onclick="onRandomeMeme()">i'm flexible</button> -->
             </div>
@@ -68,13 +71,15 @@
         <section class="meme-editor">
 
             <div class="canvas-container">
-                <canvas width="400" height="400" style="border-radius: 15px " "></canvas>
+                <canvas onclick="canvasClicked(event)" width="400" height="400" style="border-radius: 15px " "></canvas>
             </div>
             <div class=" meme-editor-control">
 
                     <input class="text-input" type="text" oninput="onSetLineTxt(this.value)">
                     <div class="upper-btns">
-                        <button class="btn imp switch-btn" onclick="onSwitchLine()">⮀</button>
+                        <button class="btn imp switch-btn" onclick="onSwitchLine()"><img class="switch-icon"
+                                src="img/switchline.webp"></button>
+                        <!-- <button class="btn imp switch-btn" onclick="onSwitchLine()">⮀</button> -->
                         <button class=" btn imp txt-btn" onclick="onDrawText()">➕</button>
                         <button class=" btn imp remove-btn" onclick="onRemoveTxt()">🗑️</button>
 
@@ -94,18 +99,26 @@
                         <button class="btn imp save-btn" onclick="onSaveMeme()">💾</button>
                     </div>
                     <div class="emojis">
-                        <span onclick="onEmoji('🥰')">🥰</span>
-                        <span onclick="onEmoji('😤')">😤</span>
-                        <span onclick="onEmoji('😭')">😭</span>
-                        <span onclick="onEmoji('😍')">😍</span>
-                        <span onclick="onEmoji('🤯')">🤯</span>
-                        <span onclick="onEmoji('😴')">😴</span>
-                        <span onclick="onEmoji('😲')">😲</span>
-                        <span onclick="onEmoji('🤣')">🤣</span>
-                        <span onclick="onEmoji('💪')">💪</span>
+                        <span class="emoji" onclick="onEmoji('🥰')">🥰</span>
+                        <span class="emoji" onclick="onEmoji('😤')">😤</span>
+                        <span class="emoji" onclick="onEmoji('😭')">😭</span>
+                        <span class="emoji" onclick="onEmoji('😍')">😍</span>
+                        <span class="emoji" onclick="onEmoji('🤯')">🤯</span>
+                        <span class="emoji" onclick="onEmoji('😴')">😴</span>
+                        <span class="emoji" onclick="onEmoji('😲')">😲</span>
+                        <span class="emoji" onclick="onEmoji('🤣')">🤣</span>
+                        <span class="emoji" onclick="onEmoji('💪')">💪</span>
 
                     </div>
-                    <button class="btn"><a href="#" onclick="downloadCanvas(this)" download="file-name">📥</a></button>
+                    <div>
+                        <button class="btn"><a href="#" onclick="downloadCanvas(this)"
+                                download="file-name">📥</a></button>
+                        <button class="btn" onclick="uploadImg()">
+                            <img class="icon small" src="img/share.png">
+                        </button>
+                    </div>
+                    <div class="share-container"></div>
+                    <input type="file" class="file-input btn" name="image" onchange="onImgInput(event)" />
                     <!-- <button class="btn" onclick="drawImg2()">get img background</button>
                  <button class="btn" onclick="uploadImg()">
                     Upload Image from Canvas

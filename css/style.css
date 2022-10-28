@@ -30,6 +30,8 @@ header {
 
 
 
+
+
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -207,24 +209,58 @@ header {
 
 }
 
+.categories-container {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f3f5f87c;
+    height: 50px;
+    width: 90%;
+    border-radius: 30px;
+    margin-bottom: 30px;
+}
 
 
 .categories {
     display: flex;
     justify-content: flex-start;
     width: 50vw;
+    margin-top: 0px;
     text-overflow: ellipsis;
+    /* white-space: nowrap; */
     overflow: hidden;
     width: 300px;
-    height: 1.2em;
-    /* white-space: nowrap; */
+    height: 3em;
+    flex-grow: 1;
+}
+
+.categories.more {
+    flex-wrap: wrap;
+    text-overflow: ellipsis;
+    overflow: visible;
+    margin-bottom: 100px;
+
+}
+
+.gallery-filter.more {
+    margin-bottom: 80px;
 }
 
 .categories>* {
-    margin-inline-start: 30px;
+    display: flex;
+    align-self: flex-start;
+    margin-inline-start: 15px;
     cursor: pointer;
 
 
+}
+
+.btn.more {
+    margin: 10px 15px;
+    width: 65px;
+    height: 30px;
+    border-radius: 50px;
+    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
+    color: #ffffff
 }
 
 
@@ -259,15 +295,7 @@ header {
     margin-bottom: 30px;
 }
 
-.categories-container {
-    display: flex;
-    justify-content: space-between;
-    background-color: #f3f5f87c;
-    height: 50px;
-    width: 90%;
-    border-radius: 30px;
-    margin-bottom: 30px;
-}
+
 
 .line {
     width: 30px;
@@ -275,6 +303,21 @@ header {
     background-color: rgb(16, 213, 128);
     margin: 6px 0;
     border-radius: 20%;
+}
+
+.icon {}
+
+.small {
+    width: 12px;
+    padding: 1px;
+}
+
+.big {}
+
+.switch-icon {
+    width: 40px;
+    height: 60px;
+    margin: 0 10px 0 0;
 }
 
 .btn {
@@ -294,14 +337,7 @@ header {
     box-shadow: 0 0 0 0;
 }
 
-.btn.more {
-    margin: 10px 15px;
-    width: 65px;
-    height: 30px;
-    border-radius: 50px;
-    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
-    color: #ffffff
-}
+
 
 .emojis {
     display: flex;
@@ -314,8 +350,14 @@ header {
     border-radius: 50px;
 }
 
-.emoji>* {
+
+.emoji {
     cursor: pointer;
+}
+
+.emoji:hover {
+    box-shadow: -1px 0px 6px 2px;
+    border-radius: 20px;
 }
 
 
@@ -328,7 +370,16 @@ header {
     font-size: xx-large;
 }
 
+@media (min-width: 540px) {
+    .btn.more {
+        display: none
+    }
+}
+
 @media (min-width: 700px) {
+    .btn.more {
+        display: block
+    }
 
     .navbar {
         /* display: none; */
@@ -386,5 +437,11 @@ header {
         font-size: xx-large;
         color: white;
 
+    }
+}
+
+@media (min-width: 1100px) {
+    .btn.more {
+        display: none
     }
 }

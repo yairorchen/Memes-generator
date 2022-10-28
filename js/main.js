@@ -84,7 +84,7 @@ function onMove(ev) {
   const pos = getEvPos(ev)
   const dx = pos.x - gMeme.lines[gCurrLine].x
   const dy = pos.y - gMeme.lines[gCurrLine].y
-  moveText(dx, dy)
+  dragText(dx, dy)
 }
 
 function onUp() {
@@ -113,8 +113,7 @@ function setTextDrag(isDrag) {
   gMeme.isDraged = isDrag
 }
 
-function moveText(dx, dy) {
-  console.log(dx, dy)
+function dragText(dx, dy) {
   gMeme.lines[gCurrLine].x += dx
   gMeme.lines[gCurrLine].y += dy
   var img = getMemeImg()
@@ -124,14 +123,64 @@ function moveText(dx, dy) {
 function isTextClicked(clickedPos) {
   const posX = gMeme.lines[gCurrLine].x
   const posY = gMeme.lines[gCurrLine].y
-  // Calc the distance between two dots
-  const distance = Math.sqrt(
-    (posX - clickedPos.x) ** 2 + (posY - clickedPos.y) ** 2
-  )
-  //If its smaller then the radius of the circle we are inside
-  return distance <= gMeme.lines[0].size
+  if (
+    posX - clickedPos.x < 0 &&
+    posX - clickedPos.x >
+      gMeme.lines[gCurrLine].txt.length * (gMeme.lines[gCurrLine].size / -2) &&
+    posY - clickedPos.y > 0 &&
+    posY - clickedPos.y < gMeme.lines[gCurrLine].size
+  ) {
+    return true
+  }
+  console.log(gMeme.lines[gCurrLine].txt.length)
 }
+
+// function isTextClicked(clickedPos) {
+//   const posX = gMeme.lines[gCurrLine].x
+//   const posY = gMeme.lines[gCurrLine].y
+//   // Calc the distance between two dots
+//   const distance = Math.sqrt(
+//     (posX - clickedPos.x) ** 2 + (posY - clickedPos.y) ** 2
+//   )
+//   //If its smaller then the radius of the circle we are inside
+//   return distance <= gMeme.lines[gCurrLine].size
+// }
 
 function toggleMenu() {
   document.body.classList.toggle('menu-open')
 }
+
+function canvasClicked(ev) {
+  console.log('Click on me canvas')
+  const clickedLine = gMeme.lines.find((line) => {
+    return (
+      ev.offsetX > line.x &&
+      ev.offsetX < line.x + line.txt.length * (line.size / 2) &&
+      ev.offsetY < line.y &&
+      ev.offsetY + line.size > line.y
+    )
+  })
+  console.log(clickedLine)
+  console.log(gMeme)
+}
+
+// function canvasClicked(ev) {
+//   console.log('Click on me canvas')
+//   // TODO: find out if clicked a star bar
+//   const clickedStar = gStars.find((star) => {
+//     // Check if the click coordinates are inside the bar coordinates
+//     return (
+//       ev.offsetX > star.x &&
+//       ev.offsetX < star.x + BAR_WIDTH &&
+//       ev.offsetY > star.y &&
+//       ev.offsetY < star.y + star.rate
+//     )
+//   })
+//   console.log(clickedStar)
+//   // TODO: open the modal on the clicked coordinates if found a click on the star bar
+//   if (clickedStar) {
+//     const { name, rate } = clickedStar
+//     openModal(name, rate, ev.clientX, ev.clientY)
+//     // close the modal otherwise
+//   } else closeModal()
+// }

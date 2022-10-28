@@ -170,6 +170,7 @@ function loadImageFromInput(ev, onImageReady) {
     img.onload = onImageReady.bind(null, img)
     // Can also do it this way:
     // img.onload = () => onImageReady(img)
+    setImg(img)
   }
   reader.readAsDataURL(ev.target.files[0]) // Read the file we picked
 }
@@ -178,35 +179,6 @@ function getImgDataUrl() {
   const imgDataUrl = gElCanvas.toDataURL('image/jpeg')
   console.log(imgDataUrl)
   return imgDataUrl
-}
-
-function uploadImg() {
-  const imgDataUrl = gElCanvas.toDataURL('image/jpeg') // Gets the canvas content as an image format
-
-  // A function to be called if request succeeds
-  function onSuccess(uploadedImgUrl) {
-    // Encode the instance of certain characters in the url
-    const encodedUploadedImgUrl = encodeURIComponent(uploadedImgUrl)
-    console.log(encodedUploadedImgUrl)
-    document.querySelector(
-      '.user-msg'
-    ).innerText = `Your photo is available here: ${uploadedImgUrl}`
-    // Create a link that on click will make a post in facebook with the image we uploaded
-    document.querySelector('.share-container').innerHTML = `
-        <a class="btn" href="https://www.facebook.com/sharer/sharer.php?u=${encodedUploadedImgUrl}&t=${encodedUploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
-           Share   
-        </a>`
-  }
-  // Send the image to the server
-  doUploadImg(imgDataUrl, onSuccess)
-}
-
-function downloadCanvas(elLink) {
-  // Gets the canvas content and convert it to base64 data URL that can be save as an image
-  const data = gElCanvas.toDataURL(/* DEFAULT: 'image/png'*/) // Method returns a data URL containing a representation of the image in the format specified by the type parameter.
-  console.log('data', data) // Decoded the image to base64
-  elLink.href = data // Put it on the link
-  elLink.download = 'canvas sketch' // Can change the name of the file
 }
 
 function onImgInput(ev) {
@@ -219,4 +191,70 @@ function removeTxt() {
   var img = getMemeImg()
   switchLine()
   renderMeme(img)
+}
+
+function uploadImg() {
+  const imgDataUrl = gElCanvas.toDataURL('image/jpeg') // Gets the canvas content as an image format
+
+  // A function to be called if request succeeds
+  function onSuccess(uploadedImgUrl) {
+    // Encode the instance of certain characters in the url
+    const encodedUploadedImgUrl = encodeURIComponent(uploadedImgUrl)
+    console.log(encodedUploadedImgUrl)
+    // document.querySelector(
+    //   '.user-msg'
+    // ).innerText = `Your photo is available here: ${uploadedImgUrl}`
+    // Create a link that on click will make a post in facebook with the image we uploaded
+    document.querySelector('.share-container').innerHTML = `
+        <a class="btn" href="https://www.facebook.com/sharer/sharer.php?u=${encodedUploadedImgUrl}&t=${encodedUploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
+           Share   
+        </a>`
+  }
+  // Send the image to the server
+  doUploadImg(imgDataUrl, onSuccess)
+}
+
+function doUploadImg(imgDataUrl, onSuccess) {
+  // Pack the image for delivery
+  const formData = new FormData()
+  formData.append('img', imgDataUrl)
+
+  // Send a post req with the image to the server
+  const XHR = new XMLHttpRequest()
+  XHR.onreadystatechange = () => {
+    // If the request is not done, we have no business here yet, so return
+    if (XHR.readyState !== XMLHttpRequest.DONE) return
+    // if the response is not ok, show an error
+    if (XHR.status !== 200) return console.error('Error uploading image')
+    const { responseText: url } = XHR
+    // Same as:
+    // const url = XHR.responseText
+
+    // If the response is ok, call the onSuccess callback function,
+    // that will create the link to facebook using the url we got
+    console.log('Got back live url:', url)
+    onSuccess(url)
+  }
+  XHR.onerror = (req, ev) => {
+    console.error(
+      'Error connecting to server with request:',
+      req,
+      '\nGot response data:',
+      ev
+    )
+  }
+  XHR.open('POST', '//ca-upload.com/here/upload.php')
+  XHR.send(formData)
+}
+
+function onImgInput(ev) {
+  loadImageFromInput(ev, renderMeme)
+}
+
+function downloadCanvas(elLink) {
+  // Gets the canvas content and convert it to base64 data URL that can be save as an image
+  const data = gElCanvas.toDataURL(/* DEFAULT: 'image/png'*/) // Method returns a data URL containing a representation of the image in the format specified by the type parameter.
+  console.log('data', data) // Decoded the image to base64
+  elLink.href = data // Put it on the link
+  elLink.download = 'canvas sketch' // Can change the name of the file
 }

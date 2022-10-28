@@ -12,6 +12,10 @@ function renderGallery(imgs = getImgs()) {
   )
   document.querySelector('.gallery-items').innerHTML = strHtmls.join('')
 }
+function onMore() {
+  document.querySelector('.gallery-filter').classList.toggle('more')
+  document.querySelector('.categories').classList.toggle('more')
+}
 
 function onSortGalleryBy(val) {
   sortGalleryBy(val)
