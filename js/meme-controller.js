@@ -1,13 +1,9 @@
 'use strict'
 
 function renderMeme(pic) {
-  // Draw the img on the canvas
-
-  let currMeme = getMeme()
-  currMeme.selectedImgId = pic.id
-  const img = new Image() // Create a new html img element
-  img.src = pic.src // Send a network req to get that image, define the img src
-  // When the image ready draw it on the canvas
+  gMeme.selectedImgId = pic.id
+  const img = new Image()
+  img.src = pic.src
   img.onload = () => {
     gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height)
 
@@ -24,6 +20,7 @@ function renderText(img) {
   let strokeColor
   let xPos
   let yPos
+  let font
   for (let i = 0; i < currMeme.lines.length; i++) {
     txt = currMeme.lines[i].txt
     txtSize = currMeme.lines[i].size
@@ -31,27 +28,25 @@ function renderText(img) {
     strokeColor = currMeme.lines[i].strokeColor
     xPos = currMeme.lines[i].x
     yPos = currMeme.lines[i].y
+    font = currMeme.lines[i].font
 
-    drawText(`${txt}`, txtColor, strokeColor, txtSize, xPos, yPos)
+    drawText(`${txt}`, txtColor, strokeColor, txtSize, xPos, yPos, font)
   }
 }
 
 function drawImg2(meme) {
-  console.log(meme)
   let txt
   let txtSize
   let txtColor
   let strokeColor
   let xPos
   let yPos
-  const img = new Image() // Create a new html img element
-  img.src = meme.img.url // Send a network req to get that image, define the img src
-  // When the image ready draw it on the canvas
+  const img = new Image()
+  img.src = meme.imgDataUrl
   img.onload = () => {
     gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height)
   }
   for (let i = 0; i < meme.lines.length; i++) {
-    console.log(meme.lines)
     txt = meme.lines[i].txt
     txtSize = meme.lines[i].size
     txtColor = meme.lines[i].color
@@ -72,7 +67,6 @@ function onSizeCurrFont(val) {
 }
 
 function onSetInnerColor(val) {
-  console.log('set1')
   setInnerColor(val)
 }
 function onSetBorderColor(val) {
@@ -88,8 +82,22 @@ function onSwitchLine() {
 }
 
 function onEmoji(emoji) {
-  console.log(emoji)
   drawNewTxt(emoji, 'white', 50)
+}
+
+function align(val) {
+  gMeme.lines.forEach((line) => {
+    if (val === -1) line.x = 30
+    if (val === 0)
+      line.x = gElCanvas.width / 2 - gCtx.measureText(line.txt).width / 2
+    if (val === 1)
+      line.x = gElCanvas.width - 30 - gCtx.measureText(line.txt).width
+  })
+  var img = getMemeImg()
+  renderMeme(img)
+}
+function onChangeFontFamily(font) {
+  changeFontFamily(font)
 }
 
 function onSaveMeme() {
@@ -103,18 +111,3 @@ function onRemoveTxt() {
 function onNoveText(val) {
   moveText(val)
 }
-
-// randomeMeme()
-// console.log(gMeme)
-// function randomeMeme() {
-//   var img = getImgById(getRandomIntInclusive(1, gImg.length))
-//   setImg(img)
-//   createMeme(
-//     1,
-//     makeLorem(),
-//     getRandomIntInclusive(10, 60),
-//     getRandomColor(),
-//     getRandomColor()
-//   )
-//   renderMeme(img)
-// }

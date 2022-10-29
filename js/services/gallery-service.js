@@ -68,14 +68,12 @@ function sizeByNunOfSearch(val) {
       keyMap.movies += 5
       break
   }
-  console.log(size)
   document.getElementById(val).style.fontSize = `${size}px`
 }
 
 function sortGalleryBy(val) {
   gSortImgBy = []
   sizeByNunOfSearch(val)
-  console.log(val)
   sortByCategory(val)
 }
 function sortByCategory(val) {
@@ -94,13 +92,6 @@ function getImgs() {
   return gImg
 }
 
-// function getImgById(id) {
-//   var imgIdx = id - 1
-//   gImg[imgIdx].url
-//   var img = `<img id="${id}" src="${gImg[imgIdx].url}" alt="">`
-//   gCurrMemeImg = img
-//   return img
-// }
 function getImgById(id) {
   var imgIdx = id - 1
   gImg[imgIdx].url
@@ -110,16 +101,7 @@ function getImgById(id) {
 
 function getMemeById(id) {
   gMeme = gSavedMemes[id]
-  console.log(gMeme)
   showSection('meme-editor')
   drawImg2(gMeme)
   return
 }
-
-// function imgSelected(img) {
-//   showSection('meme-editor')
-//   setImg(img)
-//   console.log(img.id)
-//   createMeme(img.id)
-//   renderMeme(img)
-// }

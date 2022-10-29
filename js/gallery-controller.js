@@ -1,8 +1,6 @@
 'use strict'
 
 function renderGallery(imgs = getImgs()) {
-  // var imgs
-  console.log(imgs)
   var strHtmls = imgs.map(
     (img) => `
                 <div class="img-container"><img id="${img.id}" onclick="onImgSelected(this)" class="gallery-item img"
@@ -30,12 +28,9 @@ function onRandomeMeme() {
 }
 
 function renderSavedMeme() {
-  console.log('rendering saved image')
-  console.log(gSavedMemes[0].img)
-
   var strHtmls = ''
   gSavedMemes.forEach((meme, idx) => {
-    strHtmls += `<div class="img-container"><img onclick="getMemeById(${idx})" id="${meme.img.id}" src="${meme.imgDataUrl}">
+    strHtmls += `<div class="img-container"><img onclick="getMemeById(${idx})" id="${idx}" src="${meme.imgDataUrl}">
                 </div>
                 `
   })

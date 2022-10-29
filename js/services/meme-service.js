@@ -2,10 +2,8 @@
 const STORAGE_KEY = 'savedMemes'
 var gCurrMemeImg
 var gCurrMeme
-var gCurrLine = 0
 var gMeme
 var gSavedMemes = loadFromStorage(STORAGE_KEY) || []
-console.log(gSavedMemes)
 
 function createMeme(
   id = 1,
@@ -31,6 +29,8 @@ function createMeme(
         strokeColor,
         x: 50,
         y: 150,
+        lineIdx: 0,
+        font: 'impact',
       },
     ],
   }
@@ -40,24 +40,35 @@ function getSavedMemes() {
 }
 
 function moveText(val) {
-  gMeme.lines[gCurrLine].y += val * 10
+  gMeme.lines[gMeme.selectedLineIdx].y += val * 10
   var img = getMemeImg()
   renderMeme(img)
 }
 
-function switchLine() {
-  gCurrLine++
-  if (gCurrLine >= gMeme.lines.length) gCurrLine = 0
-  document.querySelector('.text-input').value = gMeme.lines[gCurrLine].txt
+function switchLine(val) {
+  if (val) {
+    gMeme.selectedLineIdx = val
+  } else {
+    gMeme.selectedLineIdx++
+  }
+  if (gMeme.selectedLineIdx >= gMeme.lines.length) {
+    gMeme.selectedLineIdx = 0
+  }
+  document.querySelector('.text-input').value =
+    gMeme.lines[gMeme.selectedLineIdx].txt
+  var currLine = gMeme.selectedLineIdx
+  gCtx.strokeRect(
+    gMeme.lines[currLine].x,
+    gMeme.lines[currLine].y - gMeme.lines[currLine].size,
+    gCtx.measureText(gMeme.lines[currLine].txt).width,
+    gMeme.lines[currLine].size
+  )
 }
 
 function resizeCanvas() {
   const elContainer = document.querySelector('.canvas-container')
-  // Note: changing the canvas dimension this way clears the canvas
   gElCanvas.width = elContainer.offsetWidth
   gElCanvas.height = elContainer.offsetHeight
-  // Unless needed, better keep height fixed.
-  // gElCanvas.height = elContainer.offsetHeight
 }
 
 function getMeme() {
@@ -65,50 +76,41 @@ function getMeme() {
 }
 
 function getMemeImg() {
-  return gCurrMemeImg
+  return gMeme.image
 }
 function setImg(img) {
-  gCurrMemeImg = img
+  gMeme.image = img
 }
 
 function imgSelected(img) {
   showSection('meme-editor')
-
-  setImg(img)
-  console.log(img.id)
   createMeme(img.id)
+  setImg(img)
   renderMeme(img)
 }
 
 function sizeCurrFont(val) {
-  gMeme.lines[gCurrLine].size += val
+  gMeme.lines[gMeme.selectedLineIdx].size += val
   var img = getMemeImg()
   renderMeme(img)
-  // renderText(img)
 }
 
 function setLineTxt(txt) {
-  console.log(txt)
   var currMeme = getMeme()
-  currMeme.lines[`${gCurrLine}`].txt = txt
-  //   currMeme.lines[`${line}`].size = '30'
-  //   currMeme.lines[`${line}`].align = 'left'
-  //   currMeme.lines[`${line}`].color = 'red'
+  currMeme.lines[`${gMeme.selectedLineIdx}`].txt = txt
+  currMeme.lines[`${gMeme.selectedLineIdx}`].lineIdx = gMeme.selectedLineIdx
   var img = getMemeImg()
-  // renderText(img)
   renderMeme(img)
 }
 
 function setInnerColor(color) {
-  gMeme.lines[gCurrLine].color = color
+  gMeme.lines[gMeme.selectedLineIdx].color = color
   var img = getMemeImg()
-  // renderText(imgi)
   renderMeme(img)
 }
 function setBorderColor(color) {
-  gMeme.lines[gCurrLine].strokeColor = color
+  gMeme.lines[gMeme.selectedLineIdx].strokeColor = color
   var img = getMemeImg()
-  // renderText(img)
   renderMeme(img)
 }
 
@@ -118,22 +120,39 @@ function drawText(
   strokeColor = 'white',
   size,
   x = 100,
-  y = 100
+  y = 100,
+  font = 'impact'
 ) {
   gCtx.lineWidth = 1
   gCtx.strokeStyle = strokeColor
   gCtx.fillStyle = color
-  gCtx.font = `${size}px impact`
+  gCtx.font = `${size}px ${font}`
   gCtx.fillText(text, x, y)
   gCtx.strokeText(text, x, y)
 }
 
-function drawNewTxt(text = 'TEXT', color = 'red', size = 40, x = 100, y = 250) {
-  gMeme.lines.push({ txt: text, size, align: 'left', color, x, y })
+function drawNewTxt(
+  text = 'TEXT',
+  color = 'red',
+  size = 40,
+  x = 100,
+  y = 250,
+  font = gMeme.lines[gMeme.selectedLineIdx].font
+) {
+  gMeme.lines.push({
+    txt: text,
+    size,
+    align: 'left',
+    color,
+    x,
+    y,
+    lineIdx: gMeme.lines.length,
+    font: 'impact',
+  })
   gCtx.lineWidth = 1
   gCtx.strokeStyle = 'white'
   gCtx.fillStyle = color
-  gCtx.font = `${size}px Arial`
+  gCtx.font = `${size}px ${font}`
   gCtx.fillText(text, x, y)
   gCtx.strokeText(text, x, y)
   var img = getMemeImg()
@@ -146,8 +165,9 @@ function getSavedMemes() {
 }
 
 function saveCurrMeme() {
-  gMeme.imgDataUrl = getImgDataUrl()
-  console.log()
+  var data = getImgDataUrl()
+  gMeme.imgDataUrl = data
+  gMeme.img.url = data
   if (gSavedMemes) gSavedMemes.unshift(gMeme)
   saveMemeToStorage()
 }
@@ -162,77 +182,66 @@ function loadMemeToStorage() {
 
 function loadImageFromInput(ev, onImageReady) {
   const reader = new FileReader()
-  // After we read the file
   reader.onload = function (event) {
-    let img = new Image() // Create a new html img element
-    img.src = event.target.result // Set the img src to the img file we read
-    // Run the callBack func, To render the img on the canvas
+    let img = new Image()
+    img.src = event.target.result
     img.onload = onImageReady.bind(null, img)
-    // Can also do it this way:
-    // img.onload = () => onImageReady(img)
+
     setImg(img)
   }
-  reader.readAsDataURL(ev.target.files[0]) // Read the file we picked
+  reader.readAsDataURL(ev.target.files[0])
 }
 
 function getImgDataUrl() {
   const imgDataUrl = gElCanvas.toDataURL('image/jpeg')
-  console.log(imgDataUrl)
   return imgDataUrl
 }
 
 function onImgInput(ev) {
   loadImageFromInput(ev, renderImg)
+  showSection('meme-editor')
+  setImg(ev)
+  renderMeme(ev)
+}
+
+function changeFontFamily(font) {
+  gMeme.lines[gMeme.selectedLineIdx].font = font
+  var size = gMeme.lines[gMeme.selectedLineIdx].size
+
+  gCtx.font = `${size}px ${font}`
+  var img = getMemeImg()
+  renderMeme(img)
 }
 
 function removeTxt() {
-  gMeme.lines.splice(gCurrLine, 1)
-  console.log(gMeme.lines)
+  gMeme.lines.splice(gMeme.selectedLineIdx, 1)
   var img = getMemeImg()
   switchLine()
   renderMeme(img)
 }
 
 function uploadImg() {
-  const imgDataUrl = gElCanvas.toDataURL('image/jpeg') // Gets the canvas content as an image format
-
-  // A function to be called if request succeeds
+  const imgDataUrl = gElCanvas.toDataURL('image/jpeg')
   function onSuccess(uploadedImgUrl) {
-    // Encode the instance of certain characters in the url
     const encodedUploadedImgUrl = encodeURIComponent(uploadedImgUrl)
-    console.log(encodedUploadedImgUrl)
-    // document.querySelector(
-    //   '.user-msg'
-    // ).innerText = `Your photo is available here: ${uploadedImgUrl}`
-    // Create a link that on click will make a post in facebook with the image we uploaded
     document.querySelector('.share-container').innerHTML = `
         <a class="btn" href="https://www.facebook.com/sharer/sharer.php?u=${encodedUploadedImgUrl}&t=${encodedUploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
            Share   
         </a>`
   }
-  // Send the image to the server
   doUploadImg(imgDataUrl, onSuccess)
 }
 
 function doUploadImg(imgDataUrl, onSuccess) {
-  // Pack the image for delivery
   const formData = new FormData()
   formData.append('img', imgDataUrl)
 
-  // Send a post req with the image to the server
   const XHR = new XMLHttpRequest()
   XHR.onreadystatechange = () => {
-    // If the request is not done, we have no business here yet, so return
     if (XHR.readyState !== XMLHttpRequest.DONE) return
-    // if the response is not ok, show an error
     if (XHR.status !== 200) return console.error('Error uploading image')
     const { responseText: url } = XHR
-    // Same as:
-    // const url = XHR.responseText
 
-    // If the response is ok, call the onSuccess callback function,
-    // that will create the link to facebook using the url we got
-    console.log('Got back live url:', url)
     onSuccess(url)
   }
   XHR.onerror = (req, ev) => {
@@ -249,12 +258,11 @@ function doUploadImg(imgDataUrl, onSuccess) {
 
 function onImgInput(ev) {
   loadImageFromInput(ev, renderMeme)
+  gMeme.img = ev
 }
 
 function downloadCanvas(elLink) {
-  // Gets the canvas content and convert it to base64 data URL that can be save as an image
-  const data = gElCanvas.toDataURL(/* DEFAULT: 'image/png'*/) // Method returns a data URL containing a representation of the image in the format specified by the type parameter.
-  console.log('data', data) // Decoded the image to base64
-  elLink.href = data // Put it on the link
-  elLink.download = 'canvas sketch' // Can change the name of the file
+  const data = gElCanvas.toDataURL()
+  elLink.href = data
+  elLink.download = 'canvas sketch'
 }
