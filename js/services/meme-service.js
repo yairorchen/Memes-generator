@@ -51,7 +51,7 @@ function switchLine(val) {
   } else {
     gMeme.selectedLineIdx++
   }
-  if (gMeme.selectedLineIdx >= gMeme.lines.length) {
+  if (gMeme.selectedLineIdx >= gMeme.lines.length || !gMeme.selectedLineIdx) {
     gMeme.selectedLineIdx = 0
   }
   document.querySelector('.text-input').value =

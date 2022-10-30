@@ -15,7 +15,7 @@
     <header>
         <div class="header-container">
             <div class="logo-container">
-                <img src="img/LOGO.png" alt="">
+                <img onclick="showSection('gallery-layout')" src="img/LOGO.png" alt="">
             </div>
             <nav class="main-nav">
                 <ul class="navbar">
@@ -38,8 +38,8 @@
         <!-- GALLERY SECTION -->
         <section class="gallery-layout">
             <div class="gallery-filter">
-                <!-- <input class="searching" type="text" oninput="onSearch()"> -->
-                <input class="searching" onchange="onSortGalleryBy(this.value)" list="categories">
+                <input class="searching" onchange="onSortGalleryBy(this.value)" list="categories"
+                    placeholder="search key">
                 <div class="categories-container">
                     <ul class="categories">
                         <a id="Baby" onclick="onSortGalleryBy('Baby')">Baby</a>
@@ -57,7 +57,7 @@
                         <option value="Weird">
                         <option value="Movies">
                     </datalist>
-                    <button onclick="onMore()" class="btn more">More</button>
+                    <button onclick="onMore()" class="btn more" title="More title">More</button>
                 </div>
                 <!-- <button class="btn" onclick="onRandomeMeme()">i'm flexible</button> -->
             </div>
@@ -71,46 +71,48 @@
         <section class="meme-editor">
 
             <div class="canvas-container">
-                <canvas onclick="canvasClicked(event)" width="400" height="400" style="border-radius: 15px " "></canvas>
+                <canvas onclick=" canvasClicked(event)" width="400" height="400" style="border-radius: 15px " "></canvas>
             </div>
             <div class=" meme-editor-control">
 
-                    <input class="text-input" type="text" oninput="onSetLineTxt(this.value)">
+                    <input class="text-input" type="text" oninput="onSetLineTxt(this.value)" placeholder="Add text">
                     <div class="upper-btns">
                         <button class="btn imp switch-btn" onclick="onSwitchLine()"><img class="switch-icon"
-                                src="img/switchline.webp"></button>
+                                src="img/switchline.webp" title="Change line"></button>
                         <!-- <button class="btn imp switch-btn" onclick="onSwitchLine()">⮀</button> -->
-                        <button class=" btn imp txt-btn" onclick="onDrawText()">➕</button>
-                        <button class=" btn imp remove-btn" onclick="onRemoveTxt()">🗑️</button>
+                        <button class=" btn imp txt-btn" onclick="onDrawText()" title="Add new line">➕</button>
+                        <button class=" btn imp remove-btn" onclick="onRemoveTxt()" title="Remove line">🗑️</button>
 
                     </div>
                     <div class="middle-btns">
-                        <button class="sizing btn imp" onclick="onSizeCurrFont(5)">A+</button>
-                        <button class="sizing btn imp" onclick="onSizeCurrFont(-5)">A-</button>
+                        <button class="sizing btn imp" onclick="onSizeCurrFont(5)"
+                            title="Increase font size">A+</button>
+                        <button class="sizing btn imp" onclick="onSizeCurrFont(-5)"
+                            title="Decrease font size">A-</button>
 
                         <button class="btn imp"><input class="color-input" type="color"
-                                oninput="onSetInnerColor(this.value)">🎨</input></button>
+                                oninput="onSetInnerColor(this.value)" title="inner color">🎨</input></button>
 
                         <button class="btn imp"><input class="color-input" type="color"
-                                onchange="onSetBorderColor(this.value)"></input>🖌️</button>
+                                oninput="onSetBorderColor(this.value)" title="stroke color"></input>🖌️</button>
 
 
-                        <button class="btn imp save-btn" onclick="onSaveMeme()">💾</button>
-                        <button class="btn imp" onclick="align(-1)"><img class="align"
-                                src="img/align-left.png"></button>
-                        <button class="btn imp" onclick="align(0)"><img class="align"
-                                src="img/align-center.png"></button>
-                        <button class="btn imp" onclick="align(1)"><img class="align"
-                                src="img/align-right.png"></button>
-                        <button class=" btn imp" onclick="onNoveText(-1)">⬆️</button>
-                        <button class=" btn imp" onclick="onNoveText(+1)">⬇️</button>
-                        <input class="font-select" onchange="onChangeFontFamily(this.value)" list="font-family">
-                        <datalist id="font-family">
-                            <option value="impact">
-                            <option value="arial">
-                            <option value="cursive">
+                        <button class="btn imp save-btn" id="save-btn" onclick="onSaveMeme()" title="save">💾</button>
 
-                        </datalist>
+                        <button class="btn imp" onclick="align(-1)"><img class="align" src="img/align-left.png"
+                                title="Align left"></button>
+                        <button class="btn imp" onclick="align(0)"><img class="align" src="img/align-center.png"
+                                title="Align center"></button>
+                        <button class="btn imp" onclick="align(1)"><img class="align" src="img/align-right.png"
+                                title="Align right"></button>
+                        <button class=" btn imp" onclick="onNoveText(-1)" title="Line up">⬆️</button>
+                        <button class=" btn imp" onclick="onNoveText(+1)" title="Line down">⬇️</button>
+
+                        <select class="font-select" onchange="onChangeFontFamily(this.value)" title="Change font">
+                            <option value="impact">impact</option>
+                            <option value="arial">arial</option>
+                            <option value="cursive">cursive</option>
+                        </select>
                     </div>
                     <div class="emojis">
                         <span class="emoji" onclick="onEmoji('🥰')">🥰</span>
@@ -125,14 +127,15 @@
 
                     </div>
                     <div>
-                        <button class="btn"><a href="#" onclick="downloadCanvas(this)"
-                                download="file-name">📥</a></button>
-                        <button class="btn" onclick="uploadImg()">
-                            <img class="icon small" src="img/share.png">
+                        <button class="btn small"><a href="#" onclick="downloadCanvas(this)" download="file-name"
+                                title="Download">📥</a></button>
+                        <button class="btn small" onclick="uploadImg()">
+                            <img class="icon small" src="img/share.png" title="Share">
                         </button>
                     </div>
                     <div class="share-container"></div>
-                    <input type="file" class="file-input btn" name="image" onchange="onImgInput(event)" />
+                    <input type="file" class="file-input btn" name="image" onchange="onImgInput(event)"
+                        title="Image from your device" />
             </div>
         </section>
         </section>

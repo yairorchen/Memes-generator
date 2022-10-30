@@ -79,6 +79,7 @@ function getEvPos(ev) {
     x: ev.offsetX,
     y: ev.offsetY,
   }
+  console.log(pos)
   if (TOUCH_EVS.includes(ev.type)) {
     ev.preventDefault()
     ev = ev.changedTouches[0]

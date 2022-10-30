@@ -17,6 +17,8 @@ function onMore() {
 
 function onSortGalleryBy(val) {
   sortGalleryBy(val)
+  document.querySelector('.searching').value = val
+  console.log(val)
 }
 
 function onImgSelected(img) {
