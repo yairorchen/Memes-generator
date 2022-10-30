@@ -7,7 +7,7 @@ var gSavedMemes = loadFromStorage(STORAGE_KEY) || []
 
 function createMeme(
   id = 1,
-  txt = 'hello',
+  txt = 'Add text',
   size = 40,
   color = 'red',
   strokeColor = 'white'
@@ -31,6 +31,7 @@ function createMeme(
         y: 150,
         lineIdx: 0,
         font: 'impact',
+        isRect: true,
       },
     ],
   }
@@ -46,23 +47,19 @@ function moveText(val) {
 }
 
 function switchLine(val) {
-  if (val) {
-    gMeme.selectedLineIdx = val
-  } else {
+  if (val === undefined) {
     gMeme.selectedLineIdx++
+  } else {
+    console.log('baba')
+    gMeme.selectedLineIdx = val
   }
-  if (gMeme.selectedLineIdx >= gMeme.lines.length || !gMeme.selectedLineIdx) {
+  if (gMeme.selectedLineIdx >= gMeme.lines.length) {
     gMeme.selectedLineIdx = 0
   }
   document.querySelector('.text-input').value =
     gMeme.lines[gMeme.selectedLineIdx].txt
-  var currLine = gMeme.selectedLineIdx
-  gCtx.strokeRect(
-    gMeme.lines[currLine].x,
-    gMeme.lines[currLine].y - gMeme.lines[currLine].size,
-    gCtx.measureText(gMeme.lines[currLine].txt).width,
-    gMeme.lines[currLine].size
-  )
+  var img = getMemeImg()
+  renderMeme(img)
 }
 
 function resizeCanvas() {
@@ -113,9 +110,15 @@ function setBorderColor(color) {
   var img = getMemeImg()
   renderMeme(img)
 }
+function setRect() {
+  for (let i = 0; i < gMeme.lines.length; i++) {
+    gMeme.lines[i].isRect = false
+  }
+  gMeme.lines[gMeme.selectedLineIdx].isRect = true
+}
 
 function drawText(
-  text = 'TEXT',
+  text = 'Add text',
   color,
   strokeColor = 'white',
   size,
@@ -131,13 +134,18 @@ function drawText(
   gCtx.strokeText(text, x, y)
 }
 
+function drawRect(text = 'Add text', size, x = 100, y = 100) {
+  gCtx.strokeRect(x, y - size, gCtx.measureText(text).width, size + 10)
+}
+
 function drawNewTxt(
-  text = 'TEXT',
+  text = 'Add text',
   color = 'red',
   size = 40,
   x = 100,
   y = 250,
-  font = gMeme.lines[gMeme.selectedLineIdx].font
+  font = gMeme.lines[gMeme.selectedLineIdx].font,
+  isRect = true
 ) {
   gMeme.lines.push({
     txt: text,
@@ -148,6 +156,7 @@ function drawNewTxt(
     y,
     lineIdx: gMeme.lines.length,
     font: 'impact',
+    isRect: isRect,
   })
   gCtx.lineWidth = 1
   gCtx.strokeStyle = 'white'
@@ -214,7 +223,11 @@ function changeFontFamily(font) {
 }
 
 function removeTxt() {
-  gMeme.lines.splice(gMeme.selectedLineIdx, 1)
+  if (gMeme.lines.length > 1) {
+    gMeme.lines.splice(gMeme.selectedLineIdx, 1)
+  } else {
+    gMeme.lines[gMeme.selectedLineIdx].txt = ''
+  }
   var img = getMemeImg()
   switchLine()
   renderMeme(img)

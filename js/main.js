@@ -16,6 +16,7 @@ function onInit() {
   addTouchListeners()
   hideSectionsInit()
   renderGallery()
+  getTitleSized()
 }
 
 function toggleMenu() {
@@ -79,7 +80,6 @@ function getEvPos(ev) {
     x: ev.offsetX,
     y: ev.offsetY,
   }
-  console.log(pos)
   if (TOUCH_EVS.includes(ev.type)) {
     ev.preventDefault()
     ev = ev.changedTouches[0]
@@ -126,6 +126,7 @@ function canvasClicked(ev) {
     )
   })
   if (clickedLine) {
+    console.log(clickedLine.lineIdx)
     switchLine(clickedLine.lineIdx)
   }
 }

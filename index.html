@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memes generator</title>
-    <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+    <link rel="icon" href="img/favicon.png">
     <link rel="stylesheet" href="css/style.css" />
 </head>
 
@@ -19,9 +19,9 @@
             </div>
             <nav class="main-nav">
                 <ul class="navbar">
-                    <a class="nav-link" onclick="showSection('gallery-layout')">gallery</a>
-                    <a class="nav-link" onclick="showSavedMemes()">memes</a>
-                    <a class="nav-link">about</a>
+                    <a class="nav-link" onclick="showSection('gallery-layout')">Gallery</a>
+                    <a class="nav-link" onclick="showSavedMemes()">Memes</a>
+                    <a class="nav-link">About</a>
                 </ul>
             </nav>
             <div class="menu-icon" onclick="toggleMenu()">
@@ -38,24 +38,25 @@
         <!-- GALLERY SECTION -->
         <section class="gallery-layout">
             <div class="gallery-filter">
-                <input class="searching" onchange="onSortGalleryBy(this.value)" list="categories"
+                <input class="searching" oninput="onSortGalleryBy(this.value)" list="categories"
                     placeholder="search key">
                 <div class="categories-container">
                     <ul class="categories">
-                        <a id="Baby" onclick="onSortGalleryBy('Baby')">Baby</a>
-                        <a id="Cat" onclick="onSortGalleryBy('Cat')">Cat</a>
-                        <a id="Dog" onclick="onSortGalleryBy('Dog')">Dog</a>
-                        <a id="VIP" onclick="onSortGalleryBy('VIP')">VIP</a>
-                        <a id="Weird" onclick="onSortGalleryBy('Weird')">Weird</a>
-                        <a id="Movies" onclick="onSortGalleryBy('Movies')">Movies</a>
+                        <a id="all" onclick="onSortGalleryBy('all')">All</a>
+                        <a id="baby" onclick="onSortGalleryBy('baby')">Baby</a>
+                        <a id="cat" onclick="onSortGalleryBy('cat')">Cat</a>
+                        <a id="dog" onclick="onSortGalleryBy('dog')">Dog</a>
+                        <a id="vip" onclick="onSortGalleryBy('vip')">VIP</a>
+                        <a id="weird" onclick="onSortGalleryBy('weird')">Weird</a>
+                        <a id="movies" onclick="onSortGalleryBy('movies')">Movies</a>
                     </ul>
                     <datalist id="categories">
-                        <option value="Baby">
-                        <option value="Cat">
-                        <option value="Dog">
-                        <option value="VIP">
-                        <option value="Weird">
-                        <option value="Movies">
+                        <option value="baby">
+                        <option value="cat">
+                        <option value="dog">
+                        <option value="vip">
+                        <option value="weird">
+                        <option value="movies">
                     </datalist>
                     <button onclick="onMore()" class="btn more" title="More title">More</button>
                 </div>
@@ -71,7 +72,8 @@
         <section class="meme-editor">
 
             <div class="canvas-container">
-                <canvas onclick=" canvasClicked(event)" width="400" height="400" style="border-radius: 15px " "></canvas>
+                <canvas onmousedown=" canvasClicked(event)" width="400" height="400" style="border-radius: 15px " "></canvas>
+                <!-- <canvas onclick=" canvasClicked(event)" width="400" height="400" style="border-radius: 15px " "></canvas> -->
             </div>
             <div class=" meme-editor-control">
 

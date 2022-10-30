@@ -29,8 +29,11 @@ function renderText(img) {
     xPos = currMeme.lines[i].x
     yPos = currMeme.lines[i].y
     font = currMeme.lines[i].font
-
     drawText(`${txt}`, txtColor, strokeColor, txtSize, xPos, yPos, font)
+    if (gMeme.lines[i].isRect === true) {
+      setRect()
+      drawRect(`${txt}`, txtSize, xPos, yPos)
+    }
   }
 }
 
